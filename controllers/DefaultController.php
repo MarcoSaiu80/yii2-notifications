@@ -3,12 +3,18 @@
 namespace webzop\notifications\controllers;
 
 use Yii;
+use yii\data\ActiveDataProvider;
+use yii\data\ArrayDataProvider;
 use yii\web\Controller;
 use yii\db\Query;
 use yii\data\Pagination;
 use yii\helpers\Url;
 use webzop\notifications\helpers\TimeElapsed;
 use webzop\notifications\widgets\Notifications;
+use kartik\daterange\DateRangePicker;
+use kartik\grid\GridView;
+use kartik\grid\EditableColumn;
+
 
 class DefaultController extends Controller
 {
@@ -25,7 +31,7 @@ class DefaultController extends Controller
         $userId = Yii::$app->getUser()->getId();
         $query = (new Query())
             ->from('notifications')
-            ->andWhere(['or', 'user_id = 0', 'user_id = :user_id'], [':user_id' => $userId]);
+            ->andWhere(['or', 'user_id = 1', 'user_id = :user_id'], [':user_id' => $userId]);
 
         $pagination = new Pagination([
             'pageSize' => 20,
@@ -43,6 +49,58 @@ class DefaultController extends Controller
         return $this->render('index', [
             'notifications' => $notifs,
             'pagination' => $pagination,
+        ]);
+    }
+
+    public function actionChangeRead(){
+
+    }
+
+    public function actionIndexGrid(){
+        $userId = 1; // Yii::$app->getUser()->getId();
+        $query = (new Query())
+            ->select([
+                'message',
+                'route',
+                'read',
+                'FROM_UNIXTIME(created_at) as datetime',
+                'DATEDIFF(CURRENT_TIMESTAMP,FROM_UNIXTIME(created_at)) as timeago'
+            ])
+            ->from('notifications')
+            ->andWhere(['or', 'user_id = 0', 'user_id = :user_id'], [':user_id' => $userId]);
+
+//        ActiveDataProvider
+        $provider = new ArrayDataProvider([
+            'allModels' => $query->all(),
+            'sort' => [
+                'attributes' => [
+                    'message'
+                ]
+            ],
+            'pagination' => [
+                'pageSize' => 20,
+            ],
+        ]);
+
+
+
+        $pagination = new Pagination([
+            'pageSize' => 20,
+            'totalCount' => $query->count(),
+        ]);
+
+        $list = $query
+            ->orderBy(['id' => SORT_DESC])
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+        //$notifs = $this->prepareNotifications($list);
+
+        return $this->render('index-grid', [
+            'notifications' => $provider, //$notifs,
+            'pagination' => $pagination,
+//            'columns' => $columns
         ]);
     }
 
