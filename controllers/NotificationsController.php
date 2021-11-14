@@ -1,6 +1,6 @@
 <?php
 
-namespace app\controllers;
+namespace webzop\notifications\controllers;
 
 use app\models\Notifications;
 use app\models\NotificationsSearch;

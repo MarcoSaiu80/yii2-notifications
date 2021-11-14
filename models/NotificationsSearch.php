@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models;
+namespace webzop\notifications\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -14,11 +14,14 @@ class NotificationsSearch extends Notifications
     /**
      * {@inheritdoc}
      */
+
+    public $data_ricerca_da;
+    public $data_ricerca_a;
     public function rules()
     {
         return [
             [['id', 'seen', 'read', 'user_id', 'created_at'], 'integer'],
-            [['class', 'key', 'message', 'route'], 'safe'],
+            [['class', 'key', 'message', 'route','data_ricerca_da','data_ricerca_a'], 'safe'],
         ];
     }
 

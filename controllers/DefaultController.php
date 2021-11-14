@@ -2,6 +2,7 @@
 
 namespace webzop\notifications\controllers;
 
+use webzop\notifications\models\NotificationsSearch;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
@@ -61,65 +62,36 @@ class DefaultController extends Controller
 
         $userId = 1; // Yii::$app->getUser()->getId();
 
-        $query = (new Query())
-            ->select([
-                'message',
-                'route',
-                'read',
-                'FROM_UNIXTIME(created_at) as datetime',
-                'DATEDIFF(CURRENT_TIMESTAMP,FROM_UNIXTIME(created_at)) as timeago'
-            ])
-            ->from('notifications')
-            ->andWhere(['or', 'user_id = 0', 'user_id = :user_id'], [':user_id' => $userId]);
+        $searchModel = new NotificationsSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
+        $searchModel->user_id = $userId;
+        $dataProvider->query->indexBy('id');
 
-        $dataProvider = new ActiveDataProvider(['query' => $query
-            /*, 'sort' => ['defaultOrder' => ['tipo' => SORT_DESC], 'enableMultiSort' => true]*/
-        ]);
-
-
-//        $query = (new Query())
-//            ->select([
-//                'message',
-//                'route',
-//                'read',
-//                'FROM_UNIXTIME(created_at) as datetime',
-//                'DATEDIFF(CURRENT_TIMESTAMP,FROM_UNIXTIME(created_at)) as timeago'
-//            ])
-//            ->from('notifications')
-//            ->andWhere(['or', 'user_id = 0', 'user_id = :user_id'], [':user_id' => $userId]);
 //
-//
-//        $provider = new ArrayDataProvider([
-//            'allModels' => $query->all(),
-//            'sort' => [
-//                'attributes' => [
-//                    'message'
-//                ]
-//            ],
-//            'pagination' => [
-//                'pageSize' => 20,
-//            ],
+//        $query = new Query();
+//        $dataProvider = new ActiveDataProvider(['query'=>$query->from('notifications')
+//            ->where(['or', 'user_id = 0', 'user_id = :user_id'], [':user_id' => $userId])
+////            'sort'=>['defaultOrder'=>['read'=>SORT_ASC,'type.managed'=>SORT_ASC,'type.priority'=>SORT_ASC]]
 //        ]);
-
-
-
-        $pagination = new Pagination([
-            'pageSize' => 20,
-            'totalCount' => $query->count(),
-        ]);
-
-        $list = $query
-            ->orderBy(['id' => SORT_DESC])
-            ->offset($pagination->offset)
-            ->limit($pagination->limit)
-            ->all();
+//
+//        $pagination = new Pagination([
+//            'pageSize' => 20,
+//            'totalCount' => $query->count(),
+//        ]);
+//
+//        $list = $query
+//            ->orderBy(['id' => SORT_DESC])
+//            ->offset($pagination->offset)
+//            ->limit($pagination->limit)
+//            ->all();
 
         //$notifs = $this->prepareNotifications($list);
 
         return $this->render('index-grid', [
+            'searchModel' => $searchModel,
             'notifications' => $dataProvider,// $provider, //$notifs,
-            'pagination' => $pagination,
-//            'columns' => $columns
+//            'pagination' => $pagination,
+
         ]);
     }
 

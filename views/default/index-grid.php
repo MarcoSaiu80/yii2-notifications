@@ -3,9 +3,9 @@
 
 use kartik\daterange\DateRangePicker;
 use kartik\grid\EditableColumn;
+use kartik\grid\GridView as GridView;
 use yii\helpers\Url;
 use yii\widgets\LinkPager;
-use kartik\grid\GridView as GridView;
 use yii\bootstrap5\Html;
 use kartik\grid\BooleanColumn;
 //FontAwesomeAsset::register($this);
@@ -31,18 +31,18 @@ $this->title = Yii::t('modules/notifications', 'Notifications');
         <?php if ($notifications): ?>
 
         <?php echo GridView::widget([
-                'moduleId' => 'gridview', // change the module identifier to use the respective module's settings
+//                'moduleId' => 'gridview', // change the module identifier to use the respective module's settings
                 'dataProvider' => $notifications,
+               'filterModel' => $searchModel,
                 'columns' =>   [
                     'message',
-                    ['attribute'=>'datetime',
-                        'filterType' => GridView::FILTER_DATE_RANGE,
+                    ['filterType' => GridView::FILTER_DATE_RANGE,
                         'filter'=>  DateRangePicker::widget([
                             'name' => 'createTimeRange',
-                            'attribute' => 'datetime',
+                            'attribute' => 'created_at',
                             'convertFormat' => true,
-                            'startAttribute'=> date('Y-m-d h:i'),
-                            'endAttribute'=>date('Y-m-d h:i'),
+                            'startAttribute' => 'data_ricerca_da',
+                            'endAttribute' => 'data_ricerca_a',
                             'presetDropdown' => true,
                             'pluginOptions' => [
                                 'timePicker' => true,
@@ -57,8 +57,22 @@ $this->title = Yii::t('modules/notifications', 'Notifications');
                     'timeago',
                     [
                         'attribute' => 'read',
-//                        'class' => EditableColumn::class,
-//                        'url2' => ['/']
+                        'class'=>EditableColumn::class,
+                        'model'=> $searchModel
+//                        'pageSummary' => true,
+//                        'readonly' => false,
+//                        'model'=>$notifications->read,
+//                        'value' => 'ciao',//  function($model){ return $model->profileCompany; }, // assign value from getProfileCompany method
+//                        'editableOptions' => [
+//                            'header' => 'Company',
+//                            'inputType' => kartik\editable\Editable::INPUT_TEXT,
+//                            'options' => [
+//                                'pluginOptions' => [
+//
+//                                ]
+//                            ]
+//                        ],
+
                     ],
                     'type.code',
                     'managed'
@@ -85,6 +99,6 @@ $this->title = Yii::t('modules/notifications', 'Notifications');
         <?php endif; ?>
     </ul>
 
-    <?= LinkPager::widget(['pagination' => $pagination]); ?>
+<!--    --><?//= LinkPager::widget(['pagination' => $pagination]); ?>
 
 </div>
