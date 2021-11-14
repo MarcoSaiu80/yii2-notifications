@@ -58,9 +58,9 @@ class DefaultController extends Controller
 
     public function actionIndexGrid(){
 
-//        trasforma in active data provider
 
         $userId = 1; // Yii::$app->getUser()->getId();
+
         $query = (new Query())
             ->select([
                 'message',
@@ -72,18 +72,34 @@ class DefaultController extends Controller
             ->from('notifications')
             ->andWhere(['or', 'user_id = 0', 'user_id = :user_id'], [':user_id' => $userId]);
 
-
-        $provider = new ArrayDataProvider([
-            'allModels' => $query->all(),
-            'sort' => [
-                'attributes' => [
-                    'message'
-                ]
-            ],
-            'pagination' => [
-                'pageSize' => 20,
-            ],
+        $dataProvider = new ActiveDataProvider(['query' => $query
+            /*, 'sort' => ['defaultOrder' => ['tipo' => SORT_DESC], 'enableMultiSort' => true]*/
         ]);
+
+
+//        $query = (new Query())
+//            ->select([
+//                'message',
+//                'route',
+//                'read',
+//                'FROM_UNIXTIME(created_at) as datetime',
+//                'DATEDIFF(CURRENT_TIMESTAMP,FROM_UNIXTIME(created_at)) as timeago'
+//            ])
+//            ->from('notifications')
+//            ->andWhere(['or', 'user_id = 0', 'user_id = :user_id'], [':user_id' => $userId]);
+//
+//
+//        $provider = new ArrayDataProvider([
+//            'allModels' => $query->all(),
+//            'sort' => [
+//                'attributes' => [
+//                    'message'
+//                ]
+//            ],
+//            'pagination' => [
+//                'pageSize' => 20,
+//            ],
+//        ]);
 
 
 
@@ -101,7 +117,7 @@ class DefaultController extends Controller
         //$notifs = $this->prepareNotifications($list);
 
         return $this->render('index-grid', [
-            'notifications' => $provider, //$notifs,
+            'notifications' => $dataProvider,// $provider, //$notifs,
             'pagination' => $pagination,
 //            'columns' => $columns
         ]);

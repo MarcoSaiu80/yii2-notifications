@@ -59,8 +59,10 @@ $this->title = Yii::t('modules/notifications', 'Notifications');
                         'attribute' => 'read',
 //                        'class' => EditableColumn::class,
 //                        'url2' => ['/']
-                    ]
-                    , 'type'
+                    ],
+                    'type.code',
+                    'managed'
+
                 ]
                 // other widget settings
             ]); ?>
