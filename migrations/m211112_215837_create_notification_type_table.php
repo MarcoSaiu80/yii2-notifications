@@ -19,11 +19,11 @@ class m211112_215837_create_notification_type_table extends Migration
             'check_management'=> $this->boolean()->notNull(),
             'color'=>$this->text()->notNull(),
             'priority'=>$this->integer()->notNull(),
-            'notification_id' => $this->integer(),
+//            'notification_id' => $this->integer(),
             'created_at' => $this->integer(11)->unsigned()->notNull()->defaultValue(0),
 
         ]);
-        $this->addForeignKey('fk_notification_type_notifications', 'notification_type', 'notification_id', 'notifications', 'id');
+//        $this->addForeignKey('fk_notification_type_notifications', 'notification_type', 'notification_id', 'notifications', 'id');
 
 
     }

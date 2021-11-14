@@ -57,6 +57,9 @@ class DefaultController extends Controller
     }
 
     public function actionIndexGrid(){
+
+//        trasforma in active data provider
+
         $userId = 1; // Yii::$app->getUser()->getId();
         $query = (new Query())
             ->select([
@@ -69,7 +72,7 @@ class DefaultController extends Controller
             ->from('notifications')
             ->andWhere(['or', 'user_id = 0', 'user_id = :user_id'], [':user_id' => $userId]);
 
-//        ActiveDataProvider
+
         $provider = new ArrayDataProvider([
             'allModels' => $query->all(),
             'sort' => [

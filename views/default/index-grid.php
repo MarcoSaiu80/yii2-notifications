@@ -60,6 +60,7 @@ $this->title = Yii::t('modules/notifications', 'Notifications');
 //                        'class' => EditableColumn::class,
 //                        'url2' => ['/']
                     ]
+                    , 'type'
                 ]
                 // other widget settings
             ]); ?>
